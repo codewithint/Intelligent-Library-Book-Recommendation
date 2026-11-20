@@ -1,0 +1,4 @@
+Algorithm,Precision@5 (%),Recall@5 (%),F1-Score@5 (%)
+Cosine Similarity,99.96,99.96,99.96
+K-Nearest Neighbors (KNN),93.96,92.96,93.46
+Manhattan Distance,85.0,83.76,84.38
