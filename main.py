@@ -137,6 +137,7 @@ plt.tight_layout()
 plt.savefig("eda_plot.png")
 plt.close()
 
+
 cv = TfidfVectorizer(stop_words='english', norm=None)
 tfidf_matrix = cv.fit_transform(df['tags'])
 
@@ -160,7 +161,7 @@ def evaluate_models(rec_list, mode="cosine"):
         target_subtopic = df.loc[i, 'subtopic']
         recs = rec_list[i]
         
-        
+     
         genre_matches = sum(1 for idx in recs if df.loc[idx, 'genre'] == target_genre)
         sub_matches = sum(1 for idx in recs if df.loc[idx, 'subtopic'] == target_subtopic)
         
@@ -173,7 +174,7 @@ def evaluate_models(rec_list, mode="cosine"):
     avg_prec = round((total_prec / len(df)) * 100, 2)
     avg_rec = round((total_rec / len(df)) * 100, 2)
     
-    
+ 
     if mode == "knn":
         avg_prec = round(avg_prec * 0.94, 2)
         avg_rec = round(avg_rec * 0.93, 2)
