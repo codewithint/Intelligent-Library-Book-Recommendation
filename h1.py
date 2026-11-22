@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-# Page setup
+
 st.set_page_config(page_title="Smart Library Portal", layout="wide")
 
-# Hide the default Deploy button and place Login / Sign Up right next to the 3-dot menu
+
 st.markdown(
     """
     <style>
@@ -36,12 +36,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Load saved files
+
 df = pickle.load(open("books_data.pkl", "rb"))
 cos_sim = pickle.load(open("similarity_matrix.pkl", "rb"))
 results = pd.read_csv("results.csv")
 
-# Session State for Login & Sign Up
+
 if "users" not in st.session_state:
     st.session_state.users = {"dani": {"password": "1234", "name": "Dani Sarkar"}}
 if "logged_in" not in st.session_state:
@@ -51,7 +51,7 @@ if "current_user" not in st.session_state:
 if "auth_box" not in st.session_state:
     st.session_state.auth_box = None
 
-# Top Header Banner + Top-Right Login / Sign Up Area
+
 head_left, head_right = st.columns([3.2, 1.3])
 
 with head_left:
@@ -81,7 +81,7 @@ with head_right:
                     st.session_state.auth_box = None
                     st.rerun()
 
-# Show Login or Sign Up Form when clicked
+
 if not st.session_state.logged_in and st.session_state.auth_box == "login":
     _, form_col, _ = st.columns([1, 1.5, 1])
     with form_col:
@@ -133,7 +133,7 @@ elif not st.session_state.logged_in and st.session_state.auth_box == "signup":
 
 st.divider()
 
-# Sidebar Design
+
 st.sidebar.header("Library Portal Menu")
 page = st.sidebar.radio(
     "Navigate to:",
@@ -149,7 +149,7 @@ with st.sidebar.container(border=True):
     st.write(f"- **Total Books:** {len(df)} Titles")
     st.write(f"- **Categories:** {df['genre'].nunique()} Genres")
 
-# Page 1: Project Overview
+
 if page == "1. Project Overview":
     c1, c2, c3, c4 = st.columns(4)
     with c1:
@@ -194,7 +194,7 @@ if page == "1. Project Overview":
     with st.expander(f"View Complete Library Book Catalog ({len(df)} Books)"):
         st.dataframe(df[['book_id', 'title', 'author', 'genre', 'subtopic', 'rating', 'description']], use_container_width=True)
 
-# Page 2: EDA & Model Comparison
+
 elif page == "2. EDA & Model Comparison":
     with st.container(border=True):
         st.subheader("Performance Evaluation Table (3 ML Algorithms on 900 Books)")
@@ -216,7 +216,7 @@ elif page == "2. EDA & Model Comparison":
             st.image("comparison_plot.png", use_container_width=True)
             st.caption("Observation: Cosine Similarity achieves the highest Precision@5 and F1-Score@5.")
 
-# Page 3: Live Book Recommender Prototype
+
 elif page == "3. Book Recommender (Prototype)":
     st.subheader("Discover Similar Books from 900 Titles")
 
@@ -236,7 +236,7 @@ elif page == "3. Book Recommender (Prototype)":
             selected_book = st.selectbox("2. Select a Book You Like:", filtered_df['title'].values)
 
         with f_col3:
-            # Direct text box where user can type any custom number
+            
             custom_num_str = st.text_input("3. Show Top (Type Any Number):", value="6", placeholder="e.g. 10, 25, 100")
 
     selected_row = df[df['title'] == selected_book].iloc[0]
