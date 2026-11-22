@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import pickle
 
-
 st.set_page_config(page_title="Smart Library Portal", layout="wide")
 
 
@@ -50,7 +49,6 @@ if "current_user" not in st.session_state:
     st.session_state.current_user = ""
 if "auth_box" not in st.session_state:
     st.session_state.auth_box = None
-
 
 head_left, head_right = st.columns([3.2, 1.3])
 
@@ -216,7 +214,6 @@ elif page == "2. EDA & Model Comparison":
             st.image("comparison_plot.png", use_container_width=True)
             st.caption("Observation: Cosine Similarity achieves the highest Precision@5 and F1-Score@5.")
 
-
 elif page == "3. Book Recommender (Prototype)":
     st.subheader("Discover Similar Books from 900 Titles")
 
@@ -236,7 +233,7 @@ elif page == "3. Book Recommender (Prototype)":
             selected_book = st.selectbox("2. Select a Book You Like:", filtered_df['title'].values)
 
         with f_col3:
-            
+           
             custom_num_str = st.text_input("3. Show Top (Type Any Number):", value="6", placeholder="e.g. 10, 25, 100")
 
     selected_row = df[df['title'] == selected_book].iloc[0]
