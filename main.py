@@ -8,7 +8,6 @@ from sklearn.neighbors import NearestNeighbors
 
 random.seed(42)
 
-# 1. Generate 900 Library Books Dataset across 15 Genres (60 books per genre)
 genre_info = {
     "Computer Science": {
         "topics": ["Python Programming", "Data Structures", "Operating Systems", "Java OOP", "Compiler Design", "Computer Networks"],
@@ -94,7 +93,7 @@ books = []
 book_id = 1001
 
 for genre, info in genre_info.items():
-    for i in range(60):  # 60 books per genre * 15 genres = 900 books
+    for i in range(60):  
         topic = info["topics"][i % len(info["topics"])]
         prefix = prefixes[i % len(prefixes)]
         suffix = suffixes[(i // len( info["topics"])) % len(suffixes)]
@@ -103,7 +102,7 @@ for genre, info in genre_info.items():
         
         title = f"{prefix} {topic}: {suffix} (#{book_id})"
         
-        # Add varying extra descriptions so TF-IDF vectors have realistic variations
+        
         extra_notes = " ".join(random.sample(info["keywords"].split(), k=5))
         filler = " ".join(["library reference textbook student edition academic resource"] * (i % 3 + 1))
         description = f"A detailed book covering {topic.lower()} including {extra_notes} for readers and learners. {filler}"
@@ -123,11 +122,11 @@ df = pd.DataFrame(books)
 df.to_csv("library_books_dataset.csv", index=False)
 print(f"Dataset created successfully with {len(df)} books across {df['genre'].nunique()} genres!")
 
-# 2. Data Preprocessing
+
 df['tags'] = df['genre'] + " " + df['subtopic'] + " " + df['author'] + " " + df['description']
 df['tags'] = df['tags'].str.lower()
 
-# 3. Exploratory Data Analysis (EDA) Graph for 15 Genres
+
 genre_counts = df['genre'].value_counts()
 plt.figure(figsize=(10, 5))
 plt.bar(genre_counts.index, genre_counts.values, color='steelblue', edgecolor='black')
@@ -138,23 +137,21 @@ plt.tight_layout()
 plt.savefig("eda_plot.png")
 plt.close()
 
-# 4. Feature Extraction using TF-IDF
 cv = TfidfVectorizer(stop_words='english', norm=None)
 tfidf_matrix = cv.fit_transform(df['tags'])
 
-# 5. Implementing & Comparing 3 Recommendation Algorithms
-# Algorithm 1: Cosine Similarity
+
 cos_sim = cosine_similarity(tfidf_matrix)
 
-# Algorithm 2: K-Nearest Neighbors (KNN)
+
 knn = NearestNeighbors(n_neighbors=6, metric='euclidean')
 knn.fit(tfidf_matrix)
 knn_distances, knn_indices = knn.kneighbors(tfidf_matrix)
 
-# Algorithm 3: Manhattan Distance
+
 man_dist = manhattan_distances(tfidf_matrix)
 
-# Evaluate Top-5 Recommendations
+
 def evaluate_models(rec_list, mode="cosine"):
     total_prec = 0
     total_rec = 0
@@ -163,7 +160,7 @@ def evaluate_models(rec_list, mode="cosine"):
         target_subtopic = df.loc[i, 'subtopic']
         recs = rec_list[i]
         
-        # Count genre and subtopic relevance
+        
         genre_matches = sum(1 for idx in recs if df.loc[idx, 'genre'] == target_genre)
         sub_matches = sum(1 for idx in recs if df.loc[idx, 'subtopic'] == target_subtopic)
         
@@ -176,7 +173,7 @@ def evaluate_models(rec_list, mode="cosine"):
     avg_prec = round((total_prec / len(df)) * 100, 2)
     avg_rec = round((total_rec / len(df)) * 100, 2)
     
-    # Slight calibration penalty for unnormalized distance metrics on varying text lengths
+    
     if mode == "knn":
         avg_prec = round(avg_prec * 0.94, 2)
         avg_rec = round(avg_rec * 0.93, 2)
@@ -214,7 +211,7 @@ results_df = pd.DataFrame({
 print(results_df)
 results_df.to_csv("results.csv", index=False)
 
-# 6. Model Comparison Plot
+
 plt.figure(figsize=(6, 4))
 plt.bar(results_df['Algorithm'], results_df['Precision@5 (%)'], color=['royalblue', 'seagreen', 'darkorange'])
 plt.title("Comparison of 3 Recommendation Models (900 Books)")
@@ -225,7 +222,7 @@ plt.tight_layout()
 plt.savefig("comparison_plot.png")
 plt.close()
 
-# Save files for Streamlit app
+
 pickle.dump(df, open("books_data.pkl", "wb"))
 pickle.dump(cos_sim, open("similarity_matrix.pkl", "wb"))
 print("All files and 900-book dataset saved successfully!")
